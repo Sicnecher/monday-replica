@@ -27,6 +27,7 @@ import {
 } from "@dnd-kit/sortable";
 
 const BoardDetails = () => {
+  const [isDragging, setIsDragging] = useState(true)
   const { boardId } = useParams();
   const navigate = useNavigate();
   const [checkedBoxes, setCheckedBoxes] = useState([]);
@@ -88,12 +89,12 @@ const BoardDetails = () => {
               return column.type === "members"
                 ? task.cells[index].value.some((member) => regExp.test(member))
                 : regExp.test(
-                    column.type === "taskTitle"
-                      ? task.cells[index].value.title
-                      : column.type === "date"
+                  column.type === "taskTitle"
+                    ? task.cells[index].value.title
+                    : column.type === "date"
                       ? task.cells[index].value
                       : task.cells[index].value.text
-                  );
+                );
             });
           }), // Filter tasks
         }))
@@ -215,15 +216,15 @@ const BoardDetails = () => {
   function handleFilteredLabel(label) {
     boardColumnsFilter.labels.some((column) => column.id === label.id)
       ? setFilteredColumns({
-          id: currentBoard.id,
-          labels: boardColumnsFilter.labels.filter(
-            (column) => column.id !== label.id
-          ),
-        })
+        id: currentBoard.id,
+        labels: boardColumnsFilter.labels.filter(
+          (column) => column.id !== label.id
+        ),
+      })
       : setFilteredColumns({
-          id: boardId,
-          labels: [...boardColumnsFilter.labels, label],
-        });
+        id: boardId,
+        labels: [...boardColumnsFilter.labels, label],
+      });
   }
 
   function getLabelPos(id) {
@@ -269,14 +270,15 @@ const BoardDetails = () => {
       );
       groups[originalGroupPos].tasks = newTaskOrder;
 
-      console.log(newTaskOrder);
     }
+
 
     const originalPos = getGroupPos(active.id);
     const moveToPos = getGroupPos(over.id);
     const newGroupsOrder = arrayMove(groups, originalPos, moveToPos);
 
     await replaceGroups(boardId, newGroupsOrder);
+    setIsDragging(true)
   }
 
   return (
@@ -300,6 +302,8 @@ const BoardDetails = () => {
             >
               {groups.map((group) => (
                 <GroupPreview
+                  setIsDragging={setIsDragging}
+                  isDragging={isDragging}
                   id={group.id}
                   group={group}
                   labels={currentBoard.labels}

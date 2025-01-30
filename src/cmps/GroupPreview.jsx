@@ -41,6 +41,8 @@ export const GroupPreview = ({
   chatTempInfoUpdate,
   openChat,
   id,
+  isDragging,
+  setIsDragging
 
 }) => {
   const [expanded, setExpanded] = useState(true);
@@ -139,7 +141,7 @@ export const GroupPreview = ({
 
 
         </div>
-        <div {...listeners} {...attributes} style={{ cursor: "grab", width: '100%', padding: '1rem' }}>
+        <div {...listeners} {...attributes} style={{ cursor: "grab", width: '100%', padding: '1rem' }} onMouseDown={() => setIsDragging(false)}>
 
         </div>
       </div>
@@ -147,7 +149,7 @@ export const GroupPreview = ({
       <section className="group-list">
         {/* Render group labels by labels array */}
 
-        {expanded && (
+        {(expanded && isDragging) && (
           <div>
             <section
               className="labels-grid"
@@ -179,7 +181,7 @@ export const GroupPreview = ({
                 ))}
               </SortableContext >
 
-              <AddLabel groupId={group.id} boardId={boardId}/>
+              <AddLabel groupId={group.id} boardId={boardId} />
             </section>
 
             {/* Render tasks by cmp order */}
